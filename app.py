@@ -5,7 +5,8 @@ from llm.summarizer import generate_summary
 
 st.set_page_config(
     page_title="AI FIFA Match Summary Generator",
-    page_icon="⚽"
+    page_icon="⚽",
+    layout="centered"
 )
 
 st.title("⚽ AI FIFA Match Summary Generator")
@@ -14,16 +15,19 @@ st.write("Generate AI-powered summaries for FIFA World Cup matches.")
 
 st.divider()
 
-# User enters team name
+# -----------------------------
+# Team Input
+# -----------------------------
 team = st.text_input("Enter Team Name")
 
-# Store all matches for the selected team
 matches = []
 
 if team:
     matches = get_team_matches(team)
 
-# Create dropdown options
+# -----------------------------
+# Match Dropdown
+# -----------------------------
 match_options = {}
 
 for match in matches:
@@ -38,7 +42,6 @@ for match in matches:
 
 selected_match = None
 
-# Show dropdown only if matches are found
 if match_options:
 
     selected_label = st.selectbox(
@@ -48,7 +51,41 @@ if match_options:
 
     selected_match = match_options[selected_label]
 
-# Generate summary
+# -----------------------------
+# Match Details
+# -----------------------------
+if selected_match:
+
+    st.divider()
+
+    st.subheader("📊 Match Details")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.write("**🏠 Home Team**")
+        st.write(selected_match["teams"]["home"]["name"])
+
+        st.write("**📅 Date**")
+        st.write(selected_match["fixture"]["date"][:10])
+
+    with col2:
+        st.write("**✈️ Away Team**")
+        st.write(selected_match["teams"]["away"]["name"])
+
+        st.write("**⚽ Score**")
+
+        home_goals = selected_match["goals"]["home"]
+        away_goals = selected_match["goals"]["away"]
+
+        st.write(f"{home_goals} - {away_goals}")
+
+# -----------------------------
+# Generate Summary
+# -----------------------------
+# -----------------------------
+# Generate Summary
+# -----------------------------
 if st.button("Generate Summary"):
 
     if selected_match:
@@ -57,9 +94,13 @@ if st.button("Generate Summary"):
 
             summary = generate_summary(selected_match)
 
-        st.success("Summary Generated!")
+        st.divider()
 
-        st.write(summary)
+        st.subheader("🤖 AI Match Summary")
+
+        with st.container(border=True):
+
+            st.markdown(summary)
 
     else:
 
