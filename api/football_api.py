@@ -76,3 +76,25 @@ def find_match(team_name, match_date):
             return match
 
     return None
+
+def get_team_matches(team_name):
+    """
+    Return all World Cup matches played by the given team.
+    """
+
+    matches = get_world_cup_matches()
+
+    team_matches = []
+
+    for match in matches:
+
+        home_team = match["teams"]["home"]["name"]
+        away_team = match["teams"]["away"]["name"]
+
+        if (
+            team_name.lower() == home_team.lower()
+            or team_name.lower() == away_team.lower()
+        ):
+            team_matches.append(match)
+
+    return team_matches

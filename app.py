@@ -1,6 +1,6 @@
 import streamlit as st
 
-from api.football_api import find_match
+from api.football_api import get_team_matches
 from llm.summarizer import generate_summary
 
 st.set_page_config(
@@ -14,22 +14,48 @@ st.write("Generate AI-powered summaries for FIFA World Cup matches.")
 
 st.divider()
 
+# User enters team name
 team = st.text_input("Enter Team Name")
 
-match_date = st.date_input("Select Match Date")
+# Store all matches for the selected team
+matches = []
 
-if st.button("Generate Summary"):
+if team:
+    matches = get_team_matches(team)
 
-    match = find_match(
-        team,
-        str(match_date)
+# Create dropdown options
+match_options = {}
+
+for match in matches:
+
+    match_label = (
+        f'{match["fixture"]["date"][:10]} | '
+        f'{match["teams"]["home"]["name"]} vs '
+        f'{match["teams"]["away"]["name"]}'
     )
 
-    if match:
+    match_options[match_label] = match
+
+selected_match = None
+
+# Show dropdown only if matches are found
+if match_options:
+
+    selected_label = st.selectbox(
+        "Select Match",
+        list(match_options.keys())
+    )
+
+    selected_match = match_options[selected_label]
+
+# Generate summary
+if st.button("Generate Summary"):
+
+    if selected_match:
 
         with st.spinner("Generating AI Summary..."):
 
-            summary = generate_summary(match)
+            summary = generate_summary(selected_match)
 
         st.success("Summary Generated!")
 
@@ -37,4 +63,4 @@ if st.button("Generate Summary"):
 
     else:
 
-        st.error("Match not found.")
+        st.error("Please enter a valid team and select a match.")
