@@ -1,3 +1,4 @@
+from config import BASE_URL, WORLD_CUP_LEAGUE_ID, WORLD_CUP_SEASON
 import os
 import requests
 from pathlib import Path
@@ -9,7 +10,7 @@ load_dotenv(dotenv_path=dotenv_path)
 
 API_KEY = os.getenv("FOOTBALL_API_KEY")
 
-BASE_URL = "https://v3.football.api-sports.io"
+
 
 HEADERS = {
     "x-apisports-key": API_KEY
@@ -24,9 +25,9 @@ def get_world_cup_matches():
     url = f"{BASE_URL}/fixtures"
 
     params = {
-        "league": 1,
-        "season": 2022
-    }
+    "league": WORLD_CUP_LEAGUE_ID,
+    "season": WORLD_CUP_SEASON
+}
 
     response = requests.get(url, headers=HEADERS, params=params)
 
