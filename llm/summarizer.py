@@ -1,3 +1,4 @@
+from config import OLLAMA_MODEL
 import ollama
 
 
@@ -47,7 +48,7 @@ def generate_summary(match):
     prompt = build_prompt(match)
 
     response = ollama.chat(
-        model="llama3.2",
+        model=OLLAMA_MODEL,
         messages=[
             {
                 "role": "user",
